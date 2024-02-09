@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import { useState, useEffect } from 'react';
 import * as bootstrap from 'react-bootstrap';
 
