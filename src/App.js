@@ -11,21 +11,21 @@ function Table({header, content}) {
   );
   
   const rows = content.map((obj) => 
-     <tr>
-       {accessKeys.map((key) => 
+    <tr>
+      {accessKeys.map((key) => 
         <td>{obj[key]}</td>
-       )}
-     </tr>
+      )}
+    </tr>
   );
 
   return (
     <bootstrap.Table striped bordered hover>
-      <thead class="text-center">
+      <thead>
         <tr>
           {listOfTh}
         </tr>
       </thead>
-      <tbody class="align-middle">
+      <tbody>
         {rows}
       </tbody>
     </bootstrap.Table>
@@ -105,7 +105,7 @@ function DropDown({dropDownState, setDropDownState}) {
   return (
     <bootstrap.Dropdown onSelect={onSelectHandler}>
 
-      <bootstrap.Dropdown.Toggle variant="success" id="dropdown-basic">
+      <bootstrap.Dropdown.Toggle variant="primary" id="dropdown-basic">
         Сортировать {namesMap[dropDownState]}
       </bootstrap.Dropdown.Toggle>
       
@@ -148,10 +148,6 @@ export default function App() {
 
   return (
     <bootstrap.Container>
-      <bootstrap.Stack gap={3}>
-        
-        <bootstrap.Row/>
-
         <bootstrap.Row>
           <DropDown dropDownState={dropDownState} setDropDownState={setDropDownState} />
         </bootstrap.Row>
@@ -159,8 +155,6 @@ export default function App() {
         <bootstrap.Row>
           <Table header={header} content={tbl} />
         </bootstrap.Row>
-
-      </bootstrap.Stack>
     </bootstrap.Container>
   );
 }

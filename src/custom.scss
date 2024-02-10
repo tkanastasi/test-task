@@ -1,2 +1,27 @@
-/* Your customizations here */
+// custom.scss
+// Include any default variable overrides here (though functions won't be available)
+
+$blue:    #0d6efd;
+$orange:  #FFA500;
+
+$container-max-widths: ( md: 980px );
+
+.row { margin-top: 1rem !important; }
+
+$table-cell-vertical-align: middle;
+
+:root {
+    --color-orange--rgb: 255, 165, 0;
+}
+// $table-hover-color:           $orange;
+$table-hover-bg-factor:       0.8;
+$table-hover-bg:              rgba(var(--color-orange--rgb), $table-hover-bg-factor);
+
+.table thead th {
+    background-color: $blue;
+    color: #ffffff;
+    text-align: center;
+    vertical-align: middle;     
+}
+
 @import "bootstrap";
