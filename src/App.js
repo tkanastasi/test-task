@@ -2,31 +2,33 @@ import './App.scss';
 import { useState, useEffect } from 'react';
 import * as bootstrap from 'react-bootstrap';
 
-function Table({header, content}) {
-  const headerNames = header.filter((el, idx) => idx % 2 === 1);
-  const accessKeys = header.filter((el, idx) => idx % 2 === 0);
+let DataIsFetched = false;
 
-  const listOfTh = headerNames.map((fieldName) => 
-    <th>{fieldName}</th>
-  );
-  
-  const rows = content.map((obj) => 
-    <tr>
-      {accessKeys.map((key) => 
-        <td>{obj[key]}</td>
-      )}
-    </tr>
-  );
+const DropDownInfo = {
+  "reviewId" : ["по времени написания", createFieldComparator("reviewId")],
+  "reviewType" : ["по типу ревью", createFieldComparator("reviewType")],
+  "userInfo" : ["по пользователю", createLexicOrder(createFieldComparator("userNotFound"), createFieldComparator("userInfo"))]
+};
+
+function Table({ header, content, evalTrKey }) {
+  const headerNames = Array.from(header.values());
+  const accessKeys = Array.from(header.keys());
+
+  const evalTrKeyFunc = evalTrKey === undefined ? ((_, index) => index) : evalTrKey;
 
   return (
     <bootstrap.Table striped bordered hover>
       <thead>
         <tr>
-          {listOfTh}
+          {headerNames.map((fieldName) => <th key={fieldName}>{fieldName}</th>)}
         </tr>
       </thead>
       <tbody>
-        {rows}
+        {content.map((obj, index) => (
+          <tr key={evalTrKeyFunc(obj, index)}>
+            {accessKeys.map((key) => <td key={key}>{obj[key]}</td>)}
+          </tr>
+        ))}
       </tbody>
     </bootstrap.Table>
   );
@@ -63,98 +65,112 @@ function joinReviewsAndUsers(reviews, users) {
   return table;
 }
 
-function sortTable(table, dropdownState) {
-  if (dropdownState === "reviewId") {
-    return table.sort((a, b) => a["reviewId"] > b["reviewId"] ? 1 : (a["reviewId"] < b["reviewId"] ? -1 : 0));
-  } else if (dropdownState === "reviewType") {
-    return table.sort((a, b) => a["reviewType"] > b["reviewType"] ? 1 : (a["reviewType"] < b["reviewType"] ? -1 : 0));
-  } else if (dropdownState === "user") {
-    return table.sort((a, b) => {
-      if (a["userId"] === null) {
-        return 1;
-      } else if (b["userId"] === null) {
-        return -1;
-      } else {
-        return a["userInfo"] > b["userInfo"] ? 1 : (a["userInfo"] < b["userInfo"] ? -1 : 0)
-      }
-    });
-  } else {
-    throw new Error('Wrong dropdown state: ' + dropdownState);
+function createBasicComparator(order='asc') {
+  if (order === 'asc') {
+    return (a, b) => a > b ? 1 : a < b ? -1 : 0;
+  } else if (order === 'desc') {
+    return (a, b) => a > b ? -1 : a < b ? 1 : 0;
   }
 }
 
-function enumerateTable(table) {
-  let counter = 1;
-  for (let row of table) {
-    row["idx"] = counter;
-    counter += 1;
+function createLexicOrder(comp1, comp2) {
+  return (a, b) => {
+    let v = comp1(a, b);
+    return v === 0 ? comp2(a, b) : v
   }
 }
 
-function DropDown({dropDownState, setDropDownState}) {
+function createFieldComparator(fieldName, order='asc') {
+  let base = createBasicComparator(order);
+  return (a, b) => base(a[fieldName], b[fieldName])
+}
+
+function DropDown({dropDownState, setDropDownState}){
   function onSelectHandler(eventKey, obj) {
     setDropDownState(eventKey);
   }
 
-  let namesMap = {
-    "reviewId": "по времени написания",
-    "reviewType": "по типу ревью",
-    "user": "по пользователю"
-  };
-
   return (
     <bootstrap.Dropdown onSelect={onSelectHandler}>
-
       <bootstrap.Dropdown.Toggle variant="primary" id="dropdown-basic">
-        Сортировать {namesMap[dropDownState]}
+        Сортировать {DropDownInfo[dropDownState][0]}
       </bootstrap.Dropdown.Toggle>
-      
+
       <bootstrap.Dropdown.Menu>
-        {["reviewId", "reviewType", "user"].map((key) => {
+        {Object.keys(DropDownInfo).map((key) => {
           return (
-            <bootstrap.Dropdown.Item eventKey={key}>{namesMap[key]}</bootstrap.Dropdown.Item>
+            <bootstrap.Dropdown.Item key={key} eventKey={key}>{DropDownInfo[key][0]}</bootstrap.Dropdown.Item>
           );
         })}
       </bootstrap.Dropdown.Menu>
-
     </bootstrap.Dropdown>
   );
 }
 
 export default function App() {
-  const [dropDownState, setDropDownState] = useState('reviewId');
-  const [reviews, setReviews] = useState([]);
-  const [users, setUsers] = useState([]);
-  
+  const [dropDownState, setDropDownState] = useState("reviewId");
+  const [reviews, setReviews] = useState(null);
+  const [users, setUsers] = useState(null);
+
   useEffect(() => {
-    fetch('http://www.filltext.com/?rows=50&id={number|1000}&userId={number|15}&reviewText={lorem|32}&reviewType={number|1}&delay=5')
-    .then((res) => res.json())
-    .then((data) => setReviews(data));
+    const reviewsUri = 'http://www.filltext.com/?rows=50&id={number|1000}&userId={number|15}&reviewText={lorem|32}&reviewType={number|1}&delay=5';
+    const usersUri = 'http://www.filltext.com/?rows=12&userId={number|12}&firstName={firstName}&lastName={lastName}';
 
-    fetch('http://www.filltext.com/?rows=12&userId={number|12}&firstName={firstName}&lastName={lastName}')
-    .then((res) => res.json())
-    .then((data) => setUsers(data));
-  }, [setReviews, setUsers]);
+    const fetchData = async (uri) => {
+      let res = await fetch(uri);
+      let data = await res.json();
+      return data;
+    };
+   
+    Promise.all([reviewsUri, usersUri].map(fetchData))
+    .then((data) => {
+      const [reviews, users] = data;
+      if (DataIsFetched) {
+        return;
+      }
+      setReviews(reviews);
+      setUsers(users);
+      DataIsFetched = true;
+    });
+  }, []);
 
-  const header = [ "idx", "Индекс ревью",
-                   // "reviewId", "Review ID",
-                   "reviewType", "Тип ревью",
-                   "reviewText", "Текст ревью",
-                   "userInfo", "Фамилия и имя пользователя"];
+  const header = new Map ([
+    ["lineNumber", "Индекс ревью"],
+    ["reviewId", "Review ID"],
+    ["reviewType", "Тип ревью"],
+    ["reviewText", "Текст ревью"],
+    ["userInfo", "Фамилия и имя пользователя"]
+  ]);
 
-  let tbl = joinReviewsAndUsers(reviews, users);
-  tbl = sortTable(tbl, dropDownState);
-  enumerateTable(tbl);
+  let tbl = null;
+  if (users != null && reviews != null) {
+    tbl = joinReviewsAndUsers(reviews, users)
+      .map((row, idx) => Object.assign({}, row, 
+          { uniqueIdx: idx, 
+            userNotFound: row["userId"] === null ? true : false}))
+      .sort(DropDownInfo[dropDownState][1])
+      .map((row, index) => Object.assign({}, row, {lineNumber: index}))
+  }
 
   return (
     <bootstrap.Container>
-        <bootstrap.Row>
-          <DropDown dropDownState={dropDownState} setDropDownState={setDropDownState} />
-        </bootstrap.Row>
+      {(tbl === null) ? 
+        ( <bootstrap.Row>
+            <bootstrap.Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </bootstrap.Spinner>
+          </bootstrap.Row> ) : 
+        ( <>
+          <bootstrap.Row>
+            <DropDown dropDownState={dropDownState} setDropDownState={setDropDownState} />
+          </bootstrap.Row>
 
-        <bootstrap.Row>
-          <Table header={header} content={tbl} />
-        </bootstrap.Row>
+          <bootstrap.Row>
+            <Table header={header} content={tbl} evalTrKey={(row, _) => row["uniqueIdx"]} />
+          </bootstrap.Row>
+          </>
+        )
+      }
     </bootstrap.Container>
   );
 }
