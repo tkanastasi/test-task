@@ -17,8 +17,6 @@ $table-border-radius: 0.5rem;
 }
 
 .table {
-  border-collapse: separate;
-  border-spacing: 0;
   thead {
     tr {
       position: sticky;
@@ -27,23 +25,6 @@ $table-border-radius: 0.5rem;
         background-color: $blue;
         text-align: center;
         vertical-align: middle;
-      }
-      th:first-child {
-        border-top-left-radius: $table-border-radius;
-      }
-      th:last-child {
-        border-top-right-radius: $table-border-radius;
-      }
-    }
-  }
-
-  tbody {
-    tr:last-child {
-      td:first-child {
-        border-bottom-left-radius: $table-border-radius;
-      }
-      td:last-child {
-        border-bottom-right-radius: $table-border-radius;
       }
     }
   }
