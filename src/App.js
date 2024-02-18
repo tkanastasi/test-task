@@ -155,10 +155,8 @@ export default function App() {
   return (
     <bootstrap.Container>
       {(tbl === null) ? 
-        ( <bootstrap.Row>
-            <bootstrap.Spinner animation="border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </bootstrap.Spinner>
+        ( <bootstrap.Row className="spinner-container">
+            <bootstrap.Spinner className="spinner-border" animation="border" role="status"/>
           </bootstrap.Row> ) : 
         ( <>
           <bootstrap.Row>

@@ -1,27 +1,75 @@
 // custom.scss
-// Include any default variable overrides here (though functions won't be available)
 
-$blue:    #0d6efd;
-$orange:  #FFA500;
+$blue: #0d6efd;
+$orange: #FFA500;
+$container-max-widths: (md: 980px);
 
-$container-max-widths: ( md: 980px );
-
-.row { margin-top: 1rem !important; }
-
+// for table
 $table-cell-vertical-align: middle;
+$table-hover-bg: rgba(255, 165, 0, 0.8);
+$table-border-radius: 0.5rem;
 
-:root {
-    --color-orange--rgb: 255, 165, 0;
+@mixin top-margin($size: 1rem) {
+    margin-top: $size;
 }
-// $table-hover-color:           $orange;
-$table-hover-bg-factor:       0.8;
-$table-hover-bg:              rgba(var(--color-orange--rgb), $table-hover-bg-factor);
+.container .row {
+    @include top-margin;
+}
 
-.table thead th {
-    background-color: $blue;
-    color: #ffffff;
-    text-align: center;
-    vertical-align: middle;     
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    thead {
+        tr {
+            th {
+              background-color: $blue;
+              text-align: center;
+              vertical-align: middle;
+            }
+            th:first-child {
+              border-top-left-radius: $table-border-radius;
+            }
+            th:last-child {
+              border-top-right-radius: $table-border-radius;
+            }
+        }
+    }
+    tbody {
+        tr:last-child {
+            td:first-child {
+              border-bottom-left-radius: $table-border-radius;
+            }
+            td:last-child {
+              border-bottom-right-radius: $table-border-radius;
+            }
+        }
+    }
 }
+
+
+// for spinner
+$spinner-color: $orange; 
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        border-color: $spinner-color transparent $spinner-color transparent;
+        border-width: 0.25rem;
+    }
+}
+
+.dropdown-menu {
+    background-color: $orange;
+  }
 
 @import "bootstrap";
