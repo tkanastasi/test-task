@@ -76,16 +76,16 @@ function createBasicComparator(order='asc') {
 function createLexicOrder(comp1, comp2) {
   return (a, b) => {
     let v = comp1(a, b);
-    return v === 0 ? comp2(a, b) : v
+    return v === 0 ? comp2(a, b) : v;
   }
 }
 
 function createFieldComparator(fieldName, order='asc') {
   let base = createBasicComparator(order);
-  return (a, b) => base(a[fieldName], b[fieldName])
+  return (a, b) => base(a[fieldName], b[fieldName]);
 }
 
-function DropDown({dropDownState, setDropDownState}){
+function DropDown({dropDownState, setDropDownState}) {
   function onSelectHandler(eventKey, obj) {
     setDropDownState(eventKey);
   }
