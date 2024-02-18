@@ -10,62 +10,64 @@ $table-hover-bg: rgba(255, 165, 0, 0.8);
 $table-border-radius: 0.5rem;
 
 @mixin top-margin($size: 1rem) {
-    margin-top: $size;
+  margin-top: $size;
 }
 .container .row {
-    @include top-margin;
+  @include top-margin;
 }
 
 .table {
-    border-collapse: separate;
-    border-spacing: 0;
-    thead {
-        tr {
-            th {
-              background-color: $blue;
-              text-align: center;
-              vertical-align: middle;
-            }
-            th:first-child {
-              border-top-left-radius: $table-border-radius;
-            }
-            th:last-child {
-              border-top-right-radius: $table-border-radius;
-            }
-        }
+  border-collapse: separate;
+  border-spacing: 0;
+  thead {
+    tr {
+      position: sticky;
+      top: 0;
+      th {
+        background-color: $blue;
+        text-align: center;
+        vertical-align: middle;
+      }
+      th:first-child {
+        border-top-left-radius: $table-border-radius;
+      }
+      th:last-child {
+        border-top-right-radius: $table-border-radius;
+      }
     }
-    tbody {
-        tr:last-child {
-            td:first-child {
-              border-bottom-left-radius: $table-border-radius;
-            }
-            td:last-child {
-              border-bottom-right-radius: $table-border-radius;
-            }
-        }
-    }
-}
+  }
 
+  tbody {
+    tr:last-child {
+      td:first-child {
+        border-bottom-left-radius: $table-border-radius;
+      }
+      td:last-child {
+        border-bottom-right-radius: $table-border-radius;
+      }
+    }
+  }
+}
 
 // for spinner
 $spinner-color: $orange; 
 
 .spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 
-    .spinner-border {
-        width: 3rem;
-        height: 3rem;
-        border-color: $spinner-color transparent $spinner-color transparent;
-        border-width: 0.25rem;
-    }
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-color: $spinner-color transparent $spinner-color transparent;
+    border-width: 0.25rem;
+  }
 }
 
 @import "bootstrap";
