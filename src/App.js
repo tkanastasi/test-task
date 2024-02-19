@@ -35,34 +35,20 @@ function Table({ header, content, evalTrKey }) {
 }
 
 function joinReviewsAndUsers(reviews, users) {
-  function getReviewTypeDescription(rtype) {
-    return rtype === 1 ? "положительное" : "отрицательное"; 
-  }
+  const getReviewTypeDescription = rtype => rtype === 1 ? "положительное" : "отрицательное";
 
-  let idToUserNameMap = new Map();
-  for (let user of users) {
-    let userName = user["lastName"] + " " + user["firstName"];
-    idToUserNameMap.set(user["userId"], userName);
-  }
+  const idToUserNameMap = new Map(users.map(user => [
+    user["userId"],
+    `${user["lastName"]} ${user["firstName"]}`
+  ]));
 
-  let table = [];
-  for (let review of reviews) {
-    let userId = review["userId"];
-    let userCol;
-    if (idToUserNameMap.has(userId)) {
-      userCol = idToUserNameMap.get(userId);
-    } else {
-      userCol = "Пользователь не найден";
-    }
-
-    table.push({"reviewId": review["id"],
-                "reviewType": getReviewTypeDescription(review["reviewType"]),
-                "reviewText": review["reviewText"],
-                "userInfo": userCol,
-                "userId": idToUserNameMap.has(userId) ? userId : null
-    });
-  }
-  return table;
+  return reviews.map(review => ({
+    "reviewId": review["id"],
+    "reviewType": getReviewTypeDescription(review["reviewType"]),
+    "reviewText": review["reviewText"],
+    "userInfo": idToUserNameMap.get(review["userId"]) || "Пользователь не найден",
+    "userId": idToUserNameMap.get(review["userId"]) || null
+  }));
 }
 
 function createBasicComparator(order='asc') {
@@ -143,13 +129,21 @@ export default function App() {
   ]);
 
   let tbl = null;
-  if (users != null && reviews != null) {
-    tbl = joinReviewsAndUsers(reviews, users)
-      .map((row, idx) => Object.assign({}, row, 
-          { uniqueIdx: idx, 
-            userNotFound: row["userId"] === null ? true : false}))
-      .sort(DropDownInfo[dropDownState][1])
-      .map((row, index) => Object.assign({}, row, {lineNumber: index}))
+  if (users && reviews) {
+    const enrichedReviews = joinReviewsAndUsers(reviews, users).map((row, idx) => ({
+      ...row,
+      uniqueIdx: idx,
+      userNotFound: row.userId === null
+    }));
+
+    const sortedReviews = enrichedReviews.sort(DropDownInfo[dropDownState][1]);
+
+    const finalReviews = sortedReviews.map((row, index) => ({
+      ...row,
+      lineNumber: index
+    }));
+
+    tbl = finalReviews;
   }
 
   return (
