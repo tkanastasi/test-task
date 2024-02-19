@@ -46,8 +46,8 @@ function joinReviewsAndUsers(reviews, users) {
     "reviewId": review["id"],
     "reviewType": getReviewTypeDescription(review["reviewType"]),
     "reviewText": review["reviewText"],
-    "userInfo": idToUserNameMap.get(review["userId"]) || "Пользователь не найден",
-    "userId": idToUserNameMap.get(review["userId"]) || null
+    "userInfo": idToUserNameMap.has(review["userId"]) ? idToUserNameMap.get(review["userId"]) : "Пользователь не найден",
+    "userId": idToUserNameMap.has(review["userId"]) ? review["userId"] : null
   }));
 }
 
