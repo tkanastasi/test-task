@@ -7,13 +7,9 @@ $container-max-widths: (md: 980px);
 // for table
 $table-cell-vertical-align: middle;
 $table-hover-bg: rgba(255, 165, 0, 0.8);
-$table-border-radius: 0.5rem;
 
-@mixin top-margin($size: 1rem) {
-  margin-top: $size;
-}
 .container .row {
-  @include top-margin;
+  margin-top: 1rem;
 }
 
 .table {

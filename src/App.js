@@ -136,7 +136,7 @@ export default function App() {
 
   const header = new Map ([
     ["lineNumber", "Индекс ревью"],
-    ["reviewId", "Review ID"],
+    // ["reviewId", "Review ID"],
     ["reviewType", "Тип ревью"],
     ["reviewText", "Текст ревью"],
     ["userInfo", "Фамилия и имя пользователя"]
