@@ -7,10 +7,10 @@ export function joinReviewsAndUsers(reviews, users) {
   ]));
 
   return reviews.map(review => ({
-    "reviewId": review["id"],
-    "reviewType": getReviewTypeDescription(review["reviewType"]),
-    "reviewText": review["reviewText"],
-    "userInfo": idToUserNameMap.has(review["userId"]) ? idToUserNameMap.get(review["userId"]) : "Пользователь не найден",
-    "userId": idToUserNameMap.has(review["userId"]) ? review["userId"] : null
+    reviewId: review["id"],
+    reviewType: getReviewTypeDescription(review["reviewType"]),
+    reviewText: review["reviewText"],
+    userInfo: idToUserNameMap.has(review["userId"]) ? idToUserNameMap.get(review["userId"]) : "Пользователь не найден",
+    userId: idToUserNameMap.has(review["userId"]) ? review["userId"] : null
   }));
 }
