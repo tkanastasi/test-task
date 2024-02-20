@@ -23,8 +23,10 @@ $container-max-widths: (
   md: 980px,
 );
 
-.container .row {
-  margin-top: 1rem;
+.container {
+  .row {
+    margin-top: 1rem;
+  }
 }
 
 // DropDown
