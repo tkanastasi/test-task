@@ -10,23 +10,28 @@ const DropDownInfo = {
   "userInfo" : ["по пользователю", createLexicOrder(createFieldComparator("userNotFound"), createFieldComparator("userInfo"))]
 };
 
-function Table({ header, content, evalTrKey }) {
-  const headerNames = Array.from(header.values());
-  const accessKeys = Array.from(header.keys());
+const TableInfo = {
+  lineNumber: "Индекс ревью",
+  // reviewId: "Review ID",
+  reviewType: "Тип ревью",
+  reviewText: "Текст ревью",
+  userInfo: "Фамилия и имя пользователя"
+};
 
-  const evalTrKeyFunc = evalTrKey === undefined ? ((_, index) => index) : evalTrKey;
+function Table({ content, evalTrKey }) {
+  const evalTrKeyFunc = evalTrKey === undefined ? ((_, idx) => idx) : evalTrKey;
 
   return (
     <bootstrap.Table striped bordered hover>
       <thead>
         <tr>
-          {headerNames.map((fieldName) => <th key={fieldName}>{fieldName}</th>)}
+          {Object.values(TableInfo).map((fieldName) => <th key={fieldName}>{fieldName}</th>)}
         </tr>
       </thead>
       <tbody>
-        {content.map((obj, index) => (
-          <tr key={evalTrKeyFunc(obj, index)}>
-            {accessKeys.map((key) => <td key={key}>{obj[key]}</td>)}
+        {content.map((row, idx) => (
+          <tr key={evalTrKeyFunc(row, idx)}>
+            {Object.keys(TableInfo).map((key, idx) => <td key={idx}>{row[key]}</td>)}
           </tr>
         ))}
       </tbody>
@@ -72,12 +77,8 @@ function createFieldComparator(fieldName, order='asc') {
 }
 
 function DropDown({dropDownState, setDropDownState}) {
-  function onSelectHandler(eventKey, obj) {
-    setDropDownState(eventKey);
-  }
-
   return (
-    <bootstrap.Dropdown onSelect={onSelectHandler}>
+    <bootstrap.Dropdown onSelect={(eventKey) => setDropDownState(eventKey)}>
       <bootstrap.Dropdown.Toggle variant="primary" id="dropdown-basic">
         Сортировать {DropDownInfo[dropDownState][0]}
       </bootstrap.Dropdown.Toggle>
@@ -120,30 +121,19 @@ export default function App() {
     });
   }, []);
 
-  const header = new Map ([
-    ["lineNumber", "Индекс ревью"],
-    // ["reviewId", "Review ID"],
-    ["reviewType", "Тип ревью"],
-    ["reviewText", "Текст ревью"],
-    ["userInfo", "Фамилия и имя пользователя"]
-  ]);
-
   let tbl = null;
   if (users && reviews) {
-    const enrichedReviews = joinReviewsAndUsers(reviews, users).map((row, idx) => ({
-      ...row,
-      uniqueIdx: idx,
-      userNotFound: row.userId === null
-    }));
-
-    const sortedReviews = enrichedReviews.sort(DropDownInfo[dropDownState][1]);
-
-    const finalReviews = sortedReviews.map((row, index) => ({
-      ...row,
-      lineNumber: index
-    }));
-
-    tbl = finalReviews;
+    tbl = joinReviewsAndUsers(reviews, users)
+      .map((row, idx) => ({
+        ...row,
+        uniqueIdx: idx,
+        userNotFound: row.userId === null
+      }))
+      .sort(DropDownInfo[dropDownState][1])
+      .map((row, idx) => ({
+        ...row,
+        lineNumber: idx
+      }));
   }
 
   return (
@@ -158,7 +148,7 @@ export default function App() {
           </bootstrap.Row>
 
           <bootstrap.Row>
-            <Table header={header} content={tbl} evalTrKey={(row, _) => row["uniqueIdx"]} />
+            <Table content={tbl} evalTrKey={(row) => row["uniqueIdx"]} />
           </bootstrap.Row>
           </>
         )
