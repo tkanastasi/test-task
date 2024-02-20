@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import * as bootstrap from 'react-bootstrap';
 
-import { Table } from './components/Table';
 import { DropDown } from './components/DropDown';
+import { Table } from './components/Table';
 import { joinReviewsAndUsers } from './functions/joinReviewsAndUsers';
 import { createLexicOrder } from './functions/createLexicOrder';
 import { createFieldComparator } from './functions/createFieldComparator';
@@ -12,9 +12,9 @@ import './styles/App.scss';
 let DataIsFetched = false;
 
 export const DropDownInfo = {
-  "reviewId" : ["по времени написания", createFieldComparator("reviewId")],
-  "reviewType" : ["по типу ревью", createFieldComparator("reviewType")],
-  "userInfo" : ["по пользователю", createLexicOrder(createFieldComparator("userNotFound"), createFieldComparator("userInfo"))]
+  reviewId : ["по времени написания", createFieldComparator("reviewId")],
+  reviewType : ["по типу ревью", createFieldComparator("reviewType")],
+  userInfo : ["по пользователю", createLexicOrder(createFieldComparator("userNotFound"), createFieldComparator("userInfo"))]
 };
 
 export const TableInfo = {
@@ -51,7 +51,7 @@ export default function App() {
   }, []);
 
   let tbl = null;
-  if (users && reviews) {
+  if (reviews && users) {
     tbl = joinReviewsAndUsers(reviews, users)
       .map((row, idx) => ({
         ...row,
