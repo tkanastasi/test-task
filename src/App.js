@@ -141,14 +141,15 @@ export default function App() {
       {(tbl === null) ? 
         ( <bootstrap.Row className="spinner-container">
             <bootstrap.Spinner className="spinner-border" animation="border" role="status"/>
-          </bootstrap.Row> ) : 
+          </bootstrap.Row> 
+        ) : 
         ( <>
           <bootstrap.Row>
-            <DropDown dropDownState={dropDownState} setDropDownState={setDropDownState} />
+            <DropDown dropDownState={dropDownState} setDropDownState={setDropDownState}/>
           </bootstrap.Row>
 
           <bootstrap.Row>
-            <Table content={tbl} evalTrKey={(row) => row["uniqueIdx"]} />
+            <Table content={tbl} evalTrKey={(row) => row["uniqueIdx"]}/>
           </bootstrap.Row>
           </>
         )
