@@ -36,10 +36,9 @@ $table-hover-bg: $orange-rgba;
 
 .table {
   thead {
+    position: sticky;
+    top: 0;
     tr {
-      position: sticky;
-      top: 0;
-
       th {
         background-color: $blue;
         text-align: center;
