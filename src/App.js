@@ -9,6 +9,8 @@ import { createFieldComparator } from './functions/createFieldComparator';
 
 import './styles/App.scss';
 
+let DataIsFetched = false;
+
 export const DropDownInfo = {
   reviewId : ["по времени написания", createFieldComparator("reviewId")],
   reviewType : ["по типу ревью", createFieldComparator("reviewType")],
@@ -38,13 +40,14 @@ export default function App() {
       return data;
     };
    
-    Promise.all([fetchData(reviewsUri), fetchData(usersUri)])
-      .then(([reviewsData, usersData]) => {
-        if (reviewsData && usersData) {
-          setReviews(reviewsData);
-          setUsers(usersData);
-        }
-      });
+    Promise.all([reviewsUri, usersUri].map(fetchData))
+    .then(([reviews, users]) => {
+      if (DataIsFetched) return;
+  
+      setReviews(reviews);
+      setUsers(users);
+      DataIsFetched = true;
+    });
   }, []);
 
   let tbl = null;
