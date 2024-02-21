@@ -40,9 +40,10 @@ export default function App() {
    
     Promise.all([fetchData(reviewsUri), fetchData(usersUri)])
       .then(([reviewsData, usersData]) => {
-
-        setReviews(reviewsData);
-        setUsers(usersData);
+        if (reviewsData && usersData) {
+          setReviews(reviewsData);
+          setUsers(usersData);
+        }
       });
   }, []);
 
