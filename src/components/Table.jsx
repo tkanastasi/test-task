@@ -1,5 +1,5 @@
 import * as bootstrap from 'react-bootstrap';
-import { TableInfo } from '../App';
+import { TABLE_INFO } from '../App';
 
 export function Table({ content, evalTrKey }) {
   const evalTrKeyFunc = evalTrKey === undefined ? ((_, idx) => idx) : evalTrKey;
@@ -8,13 +8,13 @@ export function Table({ content, evalTrKey }) {
     <bootstrap.Table striped bordered hover>
       <thead>
         <tr>
-          {Object.values(TableInfo).map((fieldName) => <th key={fieldName}>{fieldName}</th>)}
+          {Object.values(TABLE_INFO).map((fieldName) => <th key={fieldName}>{fieldName}</th>)}
         </tr>
       </thead>
       <tbody>
         {content.map((row, idx) => (
           <tr key={evalTrKeyFunc(row, idx)}>
-            {Object.keys(TableInfo).map((key, idx) => <td key={idx}>{row[key]}</td>)}
+            {Object.keys(TABLE_INFO).map((key, idx) => <td key={idx}>{row[key]}</td>)}
           </tr>
         ))}
       </tbody>

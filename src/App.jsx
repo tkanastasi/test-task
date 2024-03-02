@@ -7,17 +7,15 @@ import { joinReviewsAndUsers } from './functions/joinReviewsAndUsers';
 import { createLexicOrder } from './functions/createLexicOrder';
 import { createFieldComparator } from './functions/createFieldComparator';
 
-import './styles/App.scss';
+import './assets/styles/App.scss';
 
-let DataIsFetched = false;
-
-export const DropDownInfo = {
+export const DROPDOWN_INFO = {
   reviewId : ["по времени написания", createFieldComparator("reviewId")],
   reviewType : ["по типу ревью", createFieldComparator("reviewType")],
   userInfo : ["по пользователю", createLexicOrder(createFieldComparator("userNotFound"), createFieldComparator("userInfo"))]
 };
 
-export const TableInfo = {
+export const TABLE_INFO = {
   lineNumber: "Индекс ревью",
   // reviewId: "Review ID",
   reviewType: "Тип ревью",
@@ -41,12 +39,9 @@ export default function App() {
     };
    
     Promise.all([reviewsUri, usersUri].map(fetchData))
-    .then(([reviews, users]) => {
-      if (DataIsFetched) return;
-  
-      setReviews(reviews);
-      setUsers(users);
-      DataIsFetched = true;
+    .then(([reviewsData, usersData]) => {
+      setReviews(reviewsData);
+      setUsers(usersData);
     });
   }, []);
 
@@ -58,7 +53,7 @@ export default function App() {
         uniqueIdx: idx,
         userNotFound: row.userId === null
       }))
-      .sort(DropDownInfo[dropDownState][1])
+      .sort(DROPDOWN_INFO[dropDownState][1])
       .map((row, idx) => ({
         ...row,
         lineNumber: idx
